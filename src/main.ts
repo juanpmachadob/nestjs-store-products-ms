@@ -5,23 +5,23 @@ import { envs } from './config/env.config';
 import { MicroserviceOptions, Transport } from '@nestjs/microservices';
 
 async function bootstrap() {
-  const logger = new Logger('Main');
+  const logger = new Logger('Products-Main');
 
   const PORT = envs.PORT;
   const app = await NestFactory.createMicroservice<MicroserviceOptions>(
     AppModule,
     {
-      transport: Transport.TCP,
+      transport: Transport.NATS,
       options: {
-        port: PORT,
+        servers: envs.NATS_SERVERS,
       },
     },
   );
 
   app.useGlobalPipes(
     new ValidationPipe({
-      whitelist: true, // properties exactamente como yo digo que vengan, ninguno adicional
-      forbidNonWhitelisted: true, // error si se envia un campo adicional
+      whitelist: true,
+      forbidNonWhitelisted: true,
     }),
   );
 
